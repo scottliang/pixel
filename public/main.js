@@ -307,8 +307,8 @@ function vote (_position) { //SANDBOX, copy paste below when ready
 
     $('#likeEffect').show().hide('scale', { duration: 400 });
     
-    markerPosition = marker.getPosition();
-    me.position = [markerPosition.d, markerPosition.e]; //just changed from ob and pb
+    // markerPosition = marker.getPosition(); now redundant
+    me.position = [marker.getPosition().lat(), marker.getPosition().lng()]; //just changed from ob and pb
     me.votes.push({ userServerId: me.userServerId, userDbId: me.userDbId, username: me.username, 
       position: me.position, value: 1, time: null, voteDbId: null, tag: null }); //time is assigned by server
     users[me.userServerId] = me; //redundant
@@ -336,8 +336,8 @@ function vote (_position) { //SANDBOX, copy paste below when ready
 
     $('#dislikeEffect').show().hide('scale', { duration: 400 });
 
-    markerPosition = marker.getPosition();
-    me.position = [markerPosition.nb, markerPosition.ob];
+    // markerPosition = marker.getPosition(); now redundant
+    me.position = [marker.getPosition().lat(), marker.getPosition().lng()];
     me.votes.push({ userServerId: me.userServerId, userDbId: me.userDbId, username: me.username, 
       position: me.position, value: 0, time: null, voteDbId: null, tag: null });
     users[me.userServerId] = me;
@@ -426,7 +426,7 @@ socket.emit("data", {a:0.5}, function(_da) {
 function drawCells() {
   var NW = new google.maps.LatLng(42.3838, -71.1288);  //Cambridge, MA coordinates; starting point of grid
   var width = 100; //* number of cells
-  var height = 150;
+  var height = 100;
 
   //computeOffset(from: LatLng, distance: number, heading: degree clockwise from true north, radius?: number)
   var NS = google.maps.geometry.spherical.computeOffset(NW, 20, 90);
@@ -539,8 +539,9 @@ var dislikeMarker = 'images/frown3.png';
 var mapBounds;
 
 function showVotesInBounds() {
-  mapBounds = map.getBounds();
-  dbBounds = [ [mapBounds.ta.d, mapBounds.ga.b], [mapBounds.ta.b, mapBounds.ga.d] ]; //db bounds are b-l to u-r!
+  // mapBounds = map.getBounds(); now redundant
+  dbBounds = [ [map.getBounds().getSouthWest().lat(), map.getBounds().getSouthWest().lng()],
+  [map.getBounds().getNorthEast().lat(), map.getBounds().getNorthEast().lng()] ]; //db bounds are b-l to u-r!
   
   socket.emit( 'getVotesInBounds', {'dbBounds': dbBounds} );
 }
